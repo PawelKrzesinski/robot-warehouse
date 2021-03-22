@@ -5,6 +5,9 @@
 
 const cvs = document.getElementById("canvas");
 const ctx = cvs.getContext("2d");
+const input = document.getElementById("input");
+
+
 
 const row = 10;
 const col = 10;
@@ -12,6 +15,7 @@ const col = 10;
 const sq = squareSize = 20;
 const vacant = "white";
 const crate = "brown";
+const robotColour = "black"
 
 function drawSquare(x, y, color){
     ctx.fillStyle = color;
@@ -39,13 +43,61 @@ function drawBoard(){
 }
 drawBoard();
 
+let robot = {
+    "x": 3,
+    "y": 3,
+    "color": robotColour
+}
+
+drawSquare(robot.x, robot.y, robot.color)
 
 
+function moveRobot(){
+    input.addEventListener("keydown", () => {
+        if(event.keyCode == 13){
+            const commands = input.value.split("");
+            getDirection(commands)
+            input.value = "";
+        }
+    });
+    
+}
 
+moveRobot()
 
+function getDirection(commands){
+    commands.forEach((command, index) => {
+        if(command === " "){
+            commands.splice(index, 1);
+        }
+    })
+    commands.forEach(command => {
+        if(command === "N"){
+            console.log("I got the direction", command)
+            drawSquare(robot.x, robot.y, vacant)
+            robot.y -= 1;
+            drawSquare(robot.x, robot.y, robot.color)
+        } else if(command === 'S'){
+            console.log("I got the direction", command)
+            drawSquare(robot.x, robot.y, vacant)
+            robot.y += 1;
+            drawSquare(robot.x, robot.y, robot.color)
+        } else if(command === 'W'){
+            console.log("I got the direction", command)
+            drawSquare(robot.x, robot.y, vacant)
+            robot.x += 1;
+            drawSquare(robot.x, robot.y, robot.color)
+        } else if(command === 'E'){
+            console.log("I got the direction", command)
+            drawSquare(robot.x, robot.y, vacant)
+            robot.x -= 1;
+            drawSquare(robot.x, robot.y, robot.color)
+        } else {
+            console.log("error");
+        }
+    })
 
-
-
+}
 
 
 
