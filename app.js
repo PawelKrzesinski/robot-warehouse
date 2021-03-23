@@ -43,6 +43,8 @@ function drawBoard(){
 }
 drawBoard();
 
+
+
 let robot = {
     "x": 3,
     "y": 3,
@@ -66,6 +68,7 @@ function moveRobot(){
 moveRobot()
 
 function getDirection(commands){
+	// Tidies up any whitespace
     commands.forEach((command, index) => {
         if(command === " "){
             commands.splice(index, 1);
@@ -73,31 +76,52 @@ function getDirection(commands){
     })
     commands.forEach(command => {
         if(command === "N"){
-            console.log("I got the direction", command)
-            drawSquare(robot.x, robot.y, vacant)
-            robot.y -= 1;
-            drawSquare(robot.x, robot.y, robot.color)
+        		if (robot.y > 0){
+            console.log(robot.y)
+            	console.log("I got the direction", command)
+            	drawSquare(robot.x, robot.y, vacant)
+            	robot.y -= 1;
+            	drawSquare(robot.x, robot.y, robot.color)
+            } else {
+            		return false;
+            }
+
         } else if(command === 'S'){
-            console.log("I got the direction", command)
-            drawSquare(robot.x, robot.y, vacant)
-            robot.y += 1;
-            drawSquare(robot.x, robot.y, robot.color)
+        		if (robot.y < 9){
+            	console.log("I got the direction", command)
+            	drawSquare(robot.x, robot.y, vacant)
+            	robot.y += 1;
+          		drawSquare(robot.x, robot.y, robot.color)
+            } else {
+            		return false;        
+            }
+
         } else if(command === 'W'){
-            console.log("I got the direction", command)
-            drawSquare(robot.x, robot.y, vacant)
-            robot.x += 1;
-            drawSquare(robot.x, robot.y, robot.color)
+        		if (robot.x > 0){
+            	console.log("I got the direction", command)
+            	drawSquare(robot.x, robot.y, vacant)
+            	robot.x -= 1;
+            	drawSquare(robot.x, robot.y, robot.color)
+            } else {
+            		return false;
+            }
+            
         } else if(command === 'E'){
-            console.log("I got the direction", command)
-            drawSquare(robot.x, robot.y, vacant)
-            robot.x -= 1;
-            drawSquare(robot.x, robot.y, robot.color)
+        		if (robot.x < 9){
+            	console.log("I got the direction", command)
+            	drawSquare(robot.x, robot.y, vacant)
+            	robot.x += 1;
+            	drawSquare(robot.x, robot.y, robot.color)
+            } else {
+            		return false;
+            }
         } else {
             console.log("error");
         }
     })
 
 }
+
 
 
 
