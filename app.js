@@ -84,63 +84,15 @@ function getDirection(receivedCommands) {
         if (commands.includes(command)) {
             console.log("I got the direction", command);
             if (command === "N") {
-                if (robot.y > 0) {
-                    drawSquare(robot.x, robot.y, vacant);
-                    robot.y -= 1;
-                    drawSquare(robot.x, robot.y, robot.color);
-                } else {
-                    return false;
-                }
+                moveNorth();
             } else if (command === 'S') {
-                if (robot.y < 9) {
-                    drawSquare(robot.x, robot.y, vacant);
-                    robot.y += 1;
-                    drawSquare(robot.x, robot.y, robot.color);
-                } else {
-                    return false;
-                }
+                moveSouth();
             } else if (command === 'W') {
-                if (robot.x > 0) {
-                    drawSquare(robot.x, robot.y, vacant);
-                    robot.x -= 1;
-                    drawSquare(robot.x, robot.y, robot.color);
-                } else {
-                    return false;
-                }
+                moveWest();
             } else if (command === 'E') {
-                if (robot.x < 9) {
-                    robot.x += 1;
-                    let wasOnCrate = crateArr.some(crate => crate.x == robot.x-1 && crate.y == robot.y)
-                    let isOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y)
-                    //if crate is picked undraw it previous position
-                    if(isOnCrate){
-                        drawSquare(robot.x, robot.y, "chocolate");
-                        drawSquare(robot.x - 1, robot.y, vacant);
-                    } else if(wasOnCrate){
-                        drawSquare(robot.x, robot.y, robot.color);
-                        drawSquare(robot.x - 1, robot.y, crateCol);
-                    } else {
-                        drawSquare(robot.x, robot.y, robot.color);
-                        drawSquare(robot.x - 1, robot.y, vacant);
-                    }
-                    crateArr.forEach(crate => {
-                        if(robot.lifting){
-                            crate.x += 1;
-                            drawSquare(robot.x - 1, robot.y, vacant);
-                        }
-                    })
-                    console.log(crateArr);
-                } else {
-                    console.log("Path blocked, you hit the wall");
-                    return false;
-                }
+                moveEast();
             } else if (command === 'G') {
-                if(!robot.lifting){
-                    pickTheCrate()
-                } else {
-                    console.log("I am already lifting something!")
-                }
-                
+                pickTheCrate();                
             } else if (command === 'D') {
                 dropTheCrate()
             }
@@ -151,6 +103,116 @@ function getDirection(receivedCommands) {
         }
     })
 }
+
+function moveNorth(){
+    if (robot.y > 0) {
+        robot.y -= 1;
+        let wasOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y+1)
+        let isOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y)
+        if(isOnCrate){
+            drawSquare(robot.x, robot.y, "chocolate");
+            drawSquare(robot.x, robot.y+1, vacant);
+        } else if(wasOnCrate){
+            drawSquare(robot.x, robot.y, robot.color);
+            drawSquare(robot.x, robot.y+1, crateCol);
+        } else {
+            drawSquare(robot.x, robot.y, robot.color);
+            drawSquare(robot.x, robot.y+1, vacant);
+        }
+        crateArr.forEach(crate => {
+            if(robot.lifting && crate.x == robot.x && crate.y == robot.y+1){
+                crate.y -= 1;
+                drawSquare(robot.x, robot.y + 1, vacant);
+            }
+        })
+        console.log(crateArr);
+    } else {
+        console.log("Path blocked, you hit the wall");
+        return false;
+    }
+}
+function moveSouth(){
+    if (robot.y < 9) {
+        robot.y += 1;
+        let wasOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y-1)
+        let isOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y)
+        if(isOnCrate){
+            drawSquare(robot.x, robot.y, "chocolate");
+            drawSquare(robot.x, robot.y-1, vacant);
+        } else if(wasOnCrate){
+            drawSquare(robot.x, robot.y, robot.color);
+            drawSquare(robot.x, robot.y-1, crateCol);
+        } else {
+            drawSquare(robot.x, robot.y, robot.color);
+            drawSquare(robot.x, robot.y-1, vacant);
+        }
+        crateArr.forEach(crate => {
+            if(robot.lifting && crate.x == robot.x && crate.y == robot.y-1){
+                crate.y += 1;
+                drawSquare(robot.x, robot.y - 1, vacant);
+            }
+        })
+        console.log(crateArr);
+    } else {
+        console.log("Path blocked, you hit the wall");
+        return false;
+    }
+}
+function moveWest(){
+    if (robot.x > 0) {
+        robot.x -= 1;
+        let wasOnCrate = crateArr.some(crate => crate.x == robot.x+1 && crate.y == robot.y)
+        let isOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y)
+        if(isOnCrate){
+            drawSquare(robot.x, robot.y, "chocolate");
+            drawSquare(robot.x + 1, robot.y, vacant);
+        } else if(wasOnCrate){
+            drawSquare(robot.x, robot.y, robot.color);
+            drawSquare(robot.x + 1, robot.y, crateCol);
+        } else {
+            drawSquare(robot.x, robot.y, robot.color);
+            drawSquare(robot.x + 1, robot.y, vacant);
+        }
+        crateArr.forEach(crate => {
+            if(robot.lifting && crate.x == robot.x+1 && crate.y == robot.y){
+                crate.x -= 1;
+                drawSquare(robot.x + 1, robot.y, vacant);
+            }
+        })
+        console.log(crateArr);
+    } else {
+        console.log("Path blocked, you hit the wall");
+        return false;
+    }
+}
+function moveEast(){
+    if (robot.x < 9) {
+        robot.x += 1;
+        let wasOnCrate = crateArr.some(crate => crate.x == robot.x-1 && crate.y == robot.y)
+        let isOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y)
+        if(isOnCrate){
+            drawSquare(robot.x, robot.y, "chocolate");
+            drawSquare(robot.x - 1, robot.y, vacant);
+        } else if(wasOnCrate){
+            drawSquare(robot.x, robot.y, robot.color);
+            drawSquare(robot.x - 1, robot.y, crateCol);
+        } else {
+            drawSquare(robot.x, robot.y, robot.color);
+            drawSquare(robot.x - 1, robot.y, vacant);
+        }
+        crateArr.forEach(crate => {
+            if(robot.lifting && crate.x == robot.x-1 && crate.y == robot.y){
+                crate.x += 1;
+                drawSquare(robot.x - 1, robot.y, vacant);
+            }
+        })
+        console.log(crateArr);
+    } else {
+        console.log("Path blocked, you hit the wall");
+        return false;
+    }
+}
+
 
 
 
