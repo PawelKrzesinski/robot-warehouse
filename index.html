@@ -8,10 +8,35 @@
     <title>Document</title>
 </head>
 <body>
-    <div>
+    <div id="app">
         <canvas id="canvas" width="200px" height="200px"></canvas>
+        <input type="text" id="input" placeholder="Type your commands in here!"/>
+        <div class="instructions">
+            <div class="squareColors">
+                <div id="robot">
+                    <p>Robot</p>
+                </div>
+                <div id="crate">
+                    <p>Crate</p>
+                </div>
+                <div id="standingOnCrate">
+                    <p>Robot standing on a crate.</p>
+                </div>
+                <div id="liftingCrate">
+                    <p>Robot lifting a crate.</p>
+                </div>
+            </div>
+            <div class="controls">
+                <p>N - move robot North</p>
+                <p>S - move robot south</p>
+                <p>E - move robot east</p>
+                <p>W - move robot west</p>
+                <p>G - grab the crate</p>
+                <p>D - drop the crate</p>
+            </div>
+        </div>
     </div>
-    <input type="text" id="input"/> 
+     
 </body>
 <script src="./app.js"></script>
 </html>

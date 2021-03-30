@@ -1,14 +1,13 @@
 const cvs = document.getElementById("canvas");
 const ctx = cvs.getContext("2d");
 const input = document.getElementById("input");
-
 const row = 10;
 const col = 10;
 const sq = squareSize = 20;
 
 const vacant = "white";
 const crateCol = "brown"
-const robotColour = "black"
+const robotCol = "black"
 
 function drawSquare(x, y, color) {
     ctx.fillStyle = color;
@@ -40,25 +39,25 @@ drawBoard();
 let robot = {
     "x": 3,
     "y": 3,
-    "color": robotColour,
+    "color": robotCol,
     "lifting": false
 }
 //Draw the robot on the grid
 drawSquare(robot.x, robot.y, robot.color)
 
 //Function for robot's movement
-function moveRobot() {
-    input.addEventListener("keydown", () => {
+function getDirections() {
+    input.addEventListener("keydown", (event) => {
         if (event.keyCode == 13) {
             const receivedCommands = input.value.split("");
-            getDirection(receivedCommands)
+            moveRobot(receivedCommands)
             input.value = "";
         }
     });
 }
+getDirections()
 
-moveRobot()
-
+// Initializes crate objects
 function Crate(x, y) {
     this.x = x;
     this.y = y;
@@ -74,10 +73,8 @@ function createCrates(coordinates) {
 }
 createCrates([{ x: 5, y: 5 }, { x: 9, y: 0 }]);
 
-
-
-
-function getDirection(receivedCommands) {
+// Main function that decides which way to move the robot or whether to drop or pick a crate.
+function moveRobot(receivedCommands) {
     const commands = ["N", "S", "W", "E", "G", "D"];
     // Tidies up any whitespace
     receivedCommands.forEach((command, index) => {
@@ -188,14 +185,18 @@ function moveWest(){
 function moveEast(){
     if (robot.x < 9) {
         robot.x += 1;
-        let wasOnCrate = crateArr.some(crate => crate.x == robot.x-1 && crate.y == robot.y)
-        let isOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y)
-        if(isOnCrate){
-            drawSquare(robot.x, robot.y, "chocolate");
-            drawSquare(robot.x - 1, robot.y, vacant);
+        let wasOnCrate = crateArr.some(crate => crate.x == robot.x-1 && crate.y == robot.y);
+        let isOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y);
+        let stepsOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y);
+        if(stepsOnCrate && robot.lifting){
+            console.log("Already carrying a crate!");
+            return false;   
         } else if(wasOnCrate){
             drawSquare(robot.x, robot.y, robot.color);
             drawSquare(robot.x - 1, robot.y, crateCol);
+        } else if(isOnCrate){
+            drawSquare(robot.x, robot.y, "chocolate");
+            drawSquare(robot.x - 1, robot.y, vacant);
         } else {
             drawSquare(robot.x, robot.y, robot.color);
             drawSquare(robot.x - 1, robot.y, vacant);
@@ -213,10 +214,6 @@ function moveEast(){
     }
 }
 
-
-
-
-
 function pickTheCrate() {
     let isCratePresent = crateArr.some(crate => crate.x === robot.x && crate.y === robot.y)
     if(isCratePresent){
@@ -231,25 +228,12 @@ function pickTheCrate() {
 
 function dropTheCrate() {
     crateArr.forEach(crate => {
-        if (robot.lifting === true && crate.x === robot.x && crate.y === robot.y) {
-            robot.color = robotColour;
+        if (robot.lifting && crate.x === robot.x && crate.y === robot.y) {
             robot.lifting = false;
-            drawSquare(robot.x, robot.y, crateCol)
+            robot.color = robotCol;  
+            drawSquare(robot.x, robot.y, "chocolate")
         } else {
             console.log("You are not lifting anything!");
         }
     })
 }
-
-
-
-// The robot is equipped with a lifting claw which can be used to move crates around the warehouse. We track the locations of all the crates in the warehouse.
-// Extend the robot's receivedCommands to include the following:
-// G grab a crate and lift it
-// D drop a crate gently to the ground
-// There are some rules about moving crates:
-// The robot should not try and lift a crate if it already lifting one
-// The robot should not lift a crate if there is not one present
-// The robot should not drop a crate on another crate!
-
-// Add diagonal movements.

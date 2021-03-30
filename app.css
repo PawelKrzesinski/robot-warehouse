@@ -8,10 +8,62 @@ body{
     align-items: center;
     justify-content: center;
 }
-div{
-    margin: 200px;
+#app{
+    margin: 200px 50px 10px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+}
+input {
+    margin: 20px;
 }
 #canvas {
     border: 1px solid black;
     background-color: lightgray;
+}
+.instructions{
+    width: 500px;
+    height: 250px;
+    background-color: gainsboro;
+    font-size: 13px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.instructions p{
+    position: relative;
+    top: 2px;
+    left: 25px;
+    width: 150px;
+}
+.squareColors {
+    width: 200px;
+}
+.controls{
+   width: 200px; 
+}
+#robot{
+    width: 20px;
+    height: 20px;
+    background-color: black;
+    margin-bottom: 5px;
+}
+#crate{
+    width: 20px;
+    height: 20px;
+    background-color: brown;
+    margin-bottom: 5px;
+}
+#standingOnCrate{
+    width: 20px;
+    height: 20px;
+    background-color: chocolate;
+    margin-bottom: 5px;
+}
+#liftingCrate{
+    width: 20px;
+    height: 20px;
+    background-color: darkgray;
+    margin-bottom: 5px;
 }
