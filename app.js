@@ -4,6 +4,8 @@ const input = document.getElementById("input");
 const row = 10;
 const col = 10;
 const sq = squareSize = 20;
+const errors = document.querySelector('.errors')
+
 
 const vacant = "white";
 const crateCol = "brown"
@@ -97,6 +99,7 @@ function moveRobot(receivedCommands) {
             console.log(`Error! Got a wrong command: "${command}", needs tidying`);
             receivedCommands.splice(index, 1);
             console.log("Tidying up unwanted receivedCommands");
+            errors.innerHTML = `Error! Got a wrong command: "${command}", needs tidying. Tidying up unwanted commands`
         }
     })
 }
@@ -106,7 +109,12 @@ function moveNorth(){
         robot.y -= 1;
         let wasOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y+1)
         let isOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y)
-        if(isOnCrate){
+        let stepsOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y);
+        if(stepsOnCrate && robot.lifting){
+            errors.innerHTML = "Already carrying a crate!"
+            console.log("Already carrying a crate!");
+            return false;
+        } else if(isOnCrate){
             drawSquare(robot.x, robot.y, "chocolate");
             drawSquare(robot.x, robot.y+1, vacant);
         } else if(wasOnCrate){
@@ -124,6 +132,7 @@ function moveNorth(){
         })
         console.log(crateArr);
     } else {
+        errors.innerHTML = "Path blocked, you hit the wall"
         console.log("Path blocked, you hit the wall");
         return false;
     }
@@ -133,7 +142,12 @@ function moveSouth(){
         robot.y += 1;
         let wasOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y-1)
         let isOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y)
-        if(isOnCrate){
+        let stepsOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y);
+        if(stepsOnCrate && robot.lifting){
+            errors.innerHTML = "Already carrying a crate!"
+            console.log("Already carrying a crate!");
+            return false;   
+        } else if(isOnCrate){
             drawSquare(robot.x, robot.y, "chocolate");
             drawSquare(robot.x, robot.y-1, vacant);
         } else if(wasOnCrate){
@@ -151,6 +165,7 @@ function moveSouth(){
         })
         console.log(crateArr);
     } else {
+        errors.innerHTML = "Path blocked, you hit the wall"
         console.log("Path blocked, you hit the wall");
         return false;
     }
@@ -160,7 +175,12 @@ function moveWest(){
         robot.x -= 1;
         let wasOnCrate = crateArr.some(crate => crate.x == robot.x+1 && crate.y == robot.y)
         let isOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y)
-        if(isOnCrate){
+        let stepsOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y);
+        if(stepsOnCrate && robot.lifting){
+            errors.innerHTML = "Already carrying a crate!"
+            console.log("Already carrying a crate!");
+            return false;   
+        } else if(isOnCrate){
             drawSquare(robot.x, robot.y, "chocolate");
             drawSquare(robot.x + 1, robot.y, vacant);
         } else if(wasOnCrate){
@@ -178,6 +198,7 @@ function moveWest(){
         })
         console.log(crateArr);
     } else {
+        errors.innerHTML = "Path blocked, you hit the wall"
         console.log("Path blocked, you hit the wall");
         return false;
     }
@@ -189,6 +210,7 @@ function moveEast(){
         let isOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y);
         let stepsOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y);
         if(stepsOnCrate && robot.lifting){
+            errors.innerHTML = "Already carrying a crate!"
             console.log("Already carrying a crate!");
             return false;   
         } else if(wasOnCrate){
@@ -209,6 +231,7 @@ function moveEast(){
         })
         console.log(crateArr);
     } else {
+        errors.innerHTML = "Path blocked, you hit the wall"
         console.log("Path blocked, you hit the wall");
         return false;
     }
@@ -217,6 +240,7 @@ function moveEast(){
 function pickTheCrate() {
     let isCratePresent = crateArr.some(crate => crate.x === robot.x && crate.y === robot.y)
     if(isCratePresent){
+        errors.innerHTML = "Picking up a crate!"
         console.log("Picking up a crate!");
         robot.lifting = true;
         robot.color = "darkgray";
@@ -227,13 +251,19 @@ function pickTheCrate() {
 }
 
 function dropTheCrate() {
-    crateArr.forEach(crate => {
-        if (robot.lifting && crate.x === robot.x && crate.y === robot.y) {
-            robot.lifting = false;
-            robot.color = robotCol;  
-            drawSquare(robot.x, robot.y, "chocolate")
-        } else {
-            console.log("You are not lifting anything!");
-        }
-    })
+    if(!robot.lifting){
+        errors.innerHTML = "You are not lifting anything!"
+        console.log("You are not lifting anything!");
+    } else {
+        crateArr.some(crate => {
+            if (robot.lifting && crate.x === robot.x && crate.y === robot.y) {
+                errors.innerHTML = "dropping a crate!"
+                robot.lifting = false;
+                robot.color = robotCol;  
+                drawSquare(robot.x, robot.y, "chocolate")
+            } else {
+                return false;
+            }
+        })
+    }
 }
