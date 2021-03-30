@@ -111,6 +111,7 @@ function moveNorth(){
         let isOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y)
         let stepsOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y);
         if(stepsOnCrate && robot.lifting){
+            robot.y += 1;
             errors.innerHTML = "Already carrying a crate!"
             console.log("Already carrying a crate!");
             return false;
@@ -144,6 +145,7 @@ function moveSouth(){
         let isOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y)
         let stepsOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y);
         if(stepsOnCrate && robot.lifting){
+            robot.y -= 1;
             errors.innerHTML = "Already carrying a crate!"
             console.log("Already carrying a crate!");
             return false;   
@@ -177,6 +179,7 @@ function moveWest(){
         let isOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y)
         let stepsOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y);
         if(stepsOnCrate && robot.lifting){
+            robot.x += 1;
             errors.innerHTML = "Already carrying a crate!"
             console.log("Already carrying a crate!");
             return false;   
@@ -210,6 +213,7 @@ function moveEast(){
         let isOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y);
         let stepsOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y);
         if(stepsOnCrate && robot.lifting){
+            robot.x -= 1;
             errors.innerHTML = "Already carrying a crate!"
             console.log("Already carrying a crate!");
             return false;   
