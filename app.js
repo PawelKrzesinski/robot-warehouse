@@ -73,7 +73,7 @@ function createCrates(coordinates) {
     })
     return crateArr;
 }
-createCrates([{ x: 5, y: 5 }, { x: 9, y: 0 }]);
+createCrates([{ x: 5, y: 5 }, { x: 3, y: 5 }]);
 
 // Main function that decides which way to move the robot or whether to drop or pick a crate.
 function moveRobot(receivedCommands) {
@@ -117,6 +117,44 @@ function moveNorth(){
             return false;
         } else if(isOnCrate){
             drawSquare(robot.x, robot.y, "chocolate");
+            !wasOnCrate ? drawSquare(robot.x, robot.y+1, vacant) : drawSquare(robot.x, robot.y+1, "brown");
+        } else if(wasOnCrate){
+            drawSquare(robot.x, robot.y, robot.color);
+            drawSquare(robot.x, robot.y+1, crateCol);
+        } else {
+            drawSquare(robot.x, robot.y, robot.color);
+            drawSquare(robot.x, robot.y+1, vacant);
+        }
+        crateArr.forEach(crate => {
+            if(robot.lifting && crate.x == robot.x && crate.y == robot.y+1){
+                crate.y -= 1;
+                drawSquare(robot.x, robot.y + 1, vacant);
+            }
+        })
+        console.log(crateArr);
+    } else {
+        errors.innerHTML = "Path blocked, you hit the wall"
+        console.log("Path blocked, you hit the wall");
+        return false;
+    }
+}
+
+function moveNorthJacobsVersion(){
+    if (robot.y > 0) {
+        robot.y -= 1;
+        let wasOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y+1)
+        let isOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y)
+        let stepsOnCrate = crateArr.some(crate => crate.x == robot.x && crate.y == robot.y);
+        if(stepsOnCrate && robot.lifting){
+            robot.y += 1;
+            errors.innerHTML = "Already carrying a crate!"
+            console.log("Already carrying a crate!");
+            return false;
+        } else if(wasOnCrate && isOnCrate){
+            drawSquare(robot.x, robot.y, "chocolate");
+            drawSquare(robot.x, robot.y+1, crateCol);
+        } else if(isOnCrate){
+            drawSquare(robot.x, robot.y, "chocolate");
             drawSquare(robot.x, robot.y+1, vacant);
         } else if(wasOnCrate){
             drawSquare(robot.x, robot.y, robot.color);
@@ -138,6 +176,7 @@ function moveNorth(){
         return false;
     }
 }
+
 function moveSouth(){
     if (robot.y < 9) {
         robot.y += 1;
@@ -151,7 +190,7 @@ function moveSouth(){
             return false;   
         } else if(isOnCrate){
             drawSquare(robot.x, robot.y, "chocolate");
-            drawSquare(robot.x, robot.y-1, vacant);
+            !wasOnCrate ? drawSquare(robot.x, robot.y-1, vacant) : drawSquare(robot.x, robot.y-1, "brown");
         } else if(wasOnCrate){
             drawSquare(robot.x, robot.y, robot.color);
             drawSquare(robot.x, robot.y-1, crateCol);
@@ -185,7 +224,7 @@ function moveWest(){
             return false;   
         } else if(isOnCrate){
             drawSquare(robot.x, robot.y, "chocolate");
-            drawSquare(robot.x + 1, robot.y, vacant);
+            !wasOnCrate ? drawSquare(robot.x+1, robot.y, vacant) : drawSquare(robot.x+1, robot.y, "brown");
         } else if(wasOnCrate){
             drawSquare(robot.x, robot.y, robot.color);
             drawSquare(robot.x + 1, robot.y, crateCol);
@@ -217,12 +256,12 @@ function moveEast(){
             errors.innerHTML = "Already carrying a crate!"
             console.log("Already carrying a crate!");
             return false;   
+        } else if(isOnCrate){
+            drawSquare(robot.x, robot.y, "chocolate");
+            !wasOnCrate ? drawSquare(robot.x-1, robot.y, vacant) : drawSquare(robot.x-1, robot.y, "brown");
         } else if(wasOnCrate){
             drawSquare(robot.x, robot.y, robot.color);
             drawSquare(robot.x - 1, robot.y, crateCol);
-        } else if(isOnCrate){
-            drawSquare(robot.x, robot.y, "chocolate");
-            drawSquare(robot.x - 1, robot.y, vacant);
         } else {
             drawSquare(robot.x, robot.y, robot.color);
             drawSquare(robot.x - 1, robot.y, vacant);
